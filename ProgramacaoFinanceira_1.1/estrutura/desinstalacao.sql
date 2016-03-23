@@ -1,9 +1,0 @@
-drop table if exists autorizacaoresolucaointeradministrativa;
-drop table if exists ficharesolucaointeradministrativa;
-drop table if exists resolucaointeradministrativa;
-drop table if exists fichaorcamentoprogramacaofinanceiravalor;
-drop table if exists fichaorcamentoprogramacaofinanceira;
-drop index if exists orcamentoprogramacaofinanceira_ano_instituicao_in;
-drop table if exists orcamentoprogramacaofinanceira;
-drop table if exists fichaorcamentoprogramacaofinanceira;
-drop table if exists orcamentoprogramacaofinanceira;
