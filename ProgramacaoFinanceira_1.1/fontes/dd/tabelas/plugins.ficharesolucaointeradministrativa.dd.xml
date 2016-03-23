@@ -1,0 +1,114 @@
+<?xml version="1.0" standalone="yes" ?>
+<table name="plugins.ficharesolucaointeradministrativa" description="Ficha da Resolução Interadministrativa" prefix="" label="Ficha da Resolução Interadministrativa" type="0">
+  <fields>
+    <field name="sequencial"
+           label="Código"
+           labelrel="Código"
+           description="Código"
+           conteudo="int4"
+           inivalue="0"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="t"
+           hassequence="t">
+      <sequence name="plugins.ficharesolucaointeradministrativa_sequencial_seq"></sequence>
+    </field>
+    <field name="resolucaointeradministrativa"
+           label="Resolução Administrativa"
+           labelrel="Resolução Administrativa"
+           description="Resolução Administrativa"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+    <field name="fichaorcamentoprogramacaofinanceira"
+           label="Ficha Financeira"
+           labelrel="Ficha Financeira"
+           description="Ficha Financeira"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+    <field name="natureza"
+           label="Natureza"
+           labelrel="Natureza"
+           description="Natureza"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+    <field name="mes"
+           label="Mês"
+           labelrel="Mês"
+           description="Mês"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+    <field name="valor"
+           label="Valor"
+           labelrel="Valor"
+           description="Valor"
+           conteudo="numeric"
+           inivalue="0"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+  </fields>
+
+  <foreignkeys>
+    <foreignkey reference="plugins.resolucaointeradministrativa" inner='true'>
+      <fieldfk name="resolucaointeradministrativa" reference="sequencial"></fieldfk>
+    </foreignkey>
+    <foreignkey reference="plugins.fichaorcamentoprogramacaofinanceira" inner='true'>
+      <fieldfk name="fichaorcamentoprogramacaofinanceira" reference="sequencial"></fieldfk>
+    </foreignkey>
+  </foreignkeys>
+  <primarykey>
+    <fieldpk name="sequencial"></fieldpk>
+  </primarykey>
+</table>

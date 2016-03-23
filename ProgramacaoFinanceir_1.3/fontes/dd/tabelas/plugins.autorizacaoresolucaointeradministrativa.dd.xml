@@ -1,0 +1,83 @@
+<?xml version="1.0" standalone="yes" ?>
+<table name="plugins.autorizacaoresolucaointeradministrativa" description="Resolução Interadministrativa" prefix="" label="Resolução Interadministrativa" type="0">
+  <fields>
+    <field name="sequencial"
+           label="Código"
+           labelrel="Código"
+           description="Código"
+           conteudo="int4"
+           inivalue="0"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="t"
+           hassequence="t">
+           <sequence name="plugins.autorizacaoresolucaointeradministrativa_sequencial_seq"></sequence>
+    </field>
+    <field name="resolucaointeradministrativa"
+           label="Resolução Interadministrativa"
+           labelrel="Resolução Interadministrativa"
+           description="Resolução Interadministrativa"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+           
+    </field>
+    <field name="data"
+           conteudo="date"
+           description="Data"
+           inivalue="null"
+           label="Data"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel="Data"
+           reference=""
+           ispk="f"
+           hassequence="f">
+           
+    </field>
+    <field name="tipo"
+           label="Tipo"
+           labelrel="Tipo"
+           description="Tipo"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+           
+    </field>
+  </fields>
+
+  <foreignkeys>
+    <foreignkey reference="resolucaointeradministrativa" inner='true'>
+      <fieldfk name="resolucaointeradministrativa" reference="sequencial"></fieldfk>
+    </foreignkey>
+  </foreignkeys>
+
+  <primarykey>
+    <fieldpk name="sequencial"></fieldpk>
+  </primarykey>
+</table>

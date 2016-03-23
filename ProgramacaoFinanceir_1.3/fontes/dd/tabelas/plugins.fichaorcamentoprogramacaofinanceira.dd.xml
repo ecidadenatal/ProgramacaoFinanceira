@@ -1,0 +1,200 @@
+<?xml version="1.0" standalone="yes" ?>
+<table name="plugins.fichaorcamentoprogramacaofinanceira" description="Ficha Programação Financeira" prefix="" label="Ficha Programação Financeira" type="0">
+  <fields>
+    <field name="sequencial"
+           label="Código"
+           labelrel="Código"
+           description="Código"
+           conteudo="int4"
+           inivalue="0"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="t"
+           hassequence="t">
+           <sequence name="plugins.fichaorcamentoprogramacaofinanceira_sequencial_seq"></sequence>
+    </field>
+    <field name="orcamentoprogramacaofinanceira"
+           label="Programação Financeira"
+           labelrel="Programação Financeira"
+           description="Programação Financeira"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+    <field name="orgao"
+           label="Orgão"
+           labelrel="Orgão"
+           description="Orgão"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+    <field name="ano"
+           label="Ano"
+           labelrel="Ano"
+           description="Ano"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+    <field name="unidade"
+           label="Unidade"
+           labelrel="Unidade"
+           description="Unidade"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+    <field name="recurso"
+           label="Recurso"
+           labelrel="Recurso"
+           description="Recurso"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+    <field name="anexo"
+           label="Anexo"
+           labelrel="Anexo"
+           description="Anexo"
+           conteudo="int4"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+    <field name="valorindisponivel"
+           label="Valor Indisponível"
+           labelrel="Valor Indisponível"
+           description="Valor Indisponível"
+           conteudo="numeric"
+           inivalue="0"
+           size="10"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+    <field name="valoraprogramar"
+           label="Valor a Programar"
+           labelrel="Valor a Programar"
+           description="Valor a Programar"
+           conteudo="numeric"
+           inivalue="0"
+           size="10"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+    <field name="valororcado"
+           label="Valor Orçado"
+           labelrel="Valor Orçado"
+           description="Valor Orçado"
+           conteudo="numeric"
+           inivalue="0"
+           size="10"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+  </fields>
+
+  <foreignkeys>
+    <foreignkey reference="plugins.orcamentoprogramacaofinanceira" inner='true'>
+      <fieldfk name="orcamentoprogramacaofinanceira" reference="sequencial"></fieldfk>
+    </foreignkey>
+    <foreignkey reference="orcorgao" inner='true'>
+      <fieldfk name="ano" reference="o40_anousu"></fieldfk>
+      <fieldfk name="orgao" reference="o40_orgao"></fieldfk>
+    </foreignkey>
+    <foreignkey reference="orcunidade" inner='true'>
+      <fieldfk name="ano" reference="o41_anousu"></fieldfk>
+      <fieldfk name="orgao" reference="o41_orgao"></fieldfk>
+      <fieldfk name="unidade" reference="o41_unidade"></fieldfk>
+    </foreignkey>
+    <foreignkey reference="orctiporec" inner='true'>
+      <fieldfk name="recurso" reference="o15_codigo"></fieldfk>
+    </foreignkey>
+    <foreignkey reference="ppasubtitulolocalizadorgasto" inner='true'>
+      <fieldfk name="anexo" reference="o11_sequencial"></fieldfk>
+    </foreignkey>
+  </foreignkeys>
+
+  <primarykey>
+    <fieldpk name="sequencial"></fieldpk>
+  </primarykey>
+</table>
