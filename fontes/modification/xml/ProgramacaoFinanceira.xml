@@ -42,22 +42,28 @@
           $oFichaFinanceira   = FichaFinanceiraRepository::getInstanciaPorDotacao($oEmpenhoFinanceiro->getDotacao());
           $oDataEmissao       = new DBDate($oEmpenhoFinanceiro->getDataEmissao());
           $oSaldoFichaFinanceira = new SaldoFichaFinanceira($oFichaFinanceira, $oDataEmissao->getMes());
+
+          $oPlugin       = new Plugin ( null, 'ProgramacaoFinanceira' );
+          $aConfiguracao = PluginService::getPluginConfig ( $oPlugin );
+    
+          $aInstituicoesNaoValida = explode ( ",", $aConfiguracao["InstituicaoNaoValidaSaldo"] );
           
-          //Instancia uma objeto saldofichafinanceira para cada um dos doze meses, e compara com cada uma das cotas
-          $sMensagem = "";
-          for ($i=1; $i <= 12; $i++) { 
-            $oSaldoFichaFinanceiraMes = new SaldoFichaFinanceira($oFichaFinanceira, $i);
-            if(!$oSaldoFichaFinanceiraMes->possuiSaldoEmpenhar(${"cota_".$i})) {
-              $sqlerro    = true;
-              $sValor     = trim(db_formatar($oSaldoFichaFinanceiraMes->getValorDisponivelParaEmpenho(), 'f'));
-              $sMensagem .= "Não há saldo suficiente na ficha {$oFichaFinanceira->getDescricao()} do mês {$i} para empenhar.";
-              $sMensagem .= "\\n\\nSaldo Disponível no mês {$i}: {$sValor} \\n\\n";
-            }
+          if (!in_array($db_getsession("DB_instit"), $aInstituicoesNaoValida) && ! $oSaldoFichaFinanceira->possuiSaldoEmpenhar($oEmpenhoFinanceiro->getValorEmpenho())) {
+		      //Instancia uma objeto saldofichafinanceira para cada um dos doze meses, e compara com cada uma das cotas
+		      $sMensagem = "";
+		      for ($i=1; $i <= 12; $i++) { 
+		        $oSaldoFichaFinanceiraMes = new SaldoFichaFinanceira($oFichaFinanceira, $i);
+		        if(!$oSaldoFichaFinanceiraMes->possuiSaldoEmpenhar(${"cota_".$i})) {
+		          $sqlerro    = true;
+		          $sValor     = trim(db_formatar($oSaldoFichaFinanceiraMes->getValorDisponivelParaEmpenho(), 'f'));
+		          $sMensagem .= "Não há saldo suficiente na ficha {$oFichaFinanceira->getDescricao()} do mês {$i} para empenhar.";
+		          $sMensagem .= "\\n\\nSaldo Disponível no mês {$i}: {$sValor} \\n\\n";
+		        }
+		      }
+		      if ($sqlerro) {
+		        throw new Exception($sMensagem);
+		      }
           }
-          if ($sqlerro) {
-            throw new Exception($sMensagem);
-          }
-          
           /*if ( ! $oSaldoFichaFinanceira->possuiSaldoEmpenhar($oEmpenhoFinanceiro->getValorEmpenho())) {
 
             $sqlerro  = true;
@@ -128,13 +134,21 @@
 
     $oFichaFinanceira      = FichaFinanceiraRepository::getInstanciaPorDotacao(DotacaoRepository::getDotacaoPorCodigoAno($o47_coddot, $e56_anousu));
     $oSaldoFichaFinanceira = new SaldoFichaFinanceira($oFichaFinanceira, $iMes);
-
-    if (!$oSaldoFichaFinanceira->possuiSaldoEmpenhar($e54_valor)) {
-
-      $sValor = trim(db_formatar($oSaldoFichaFinanceira->getValorDisponivelParaEmpenho(), 'f'));
-      $sMensagem  = "Não há saldo suficiente na ficha {$oFichaFinanceira->getDescricao()} para autorizar o empenho.";
-      $sMensagem .= "\\n\\nSaldo Disponível: {$sValor}";
-      throw new BusinessException($sMensagem);
+    
+    $oPlugin       = new Plugin ( null, 'ProgramacaoFinanceira' );
+    $aConfiguracao = PluginService::getPluginConfig ( $oPlugin );
+    
+    $aInstituicoesNaoValida = explode ( ",", $aConfiguracao["InstituicaoNaoValidaSaldo"] );
+          
+    if (!in_array($db_getsession("DB_instit"), $aInstituicoesNaoValida)) {
+  
+      if (!$oSaldoFichaFinanceira->possuiSaldoEmpenhar($e54_valor)) {
+  
+        $sValor = trim(db_formatar($oSaldoFichaFinanceira->getValorDisponivelParaEmpenho(), 'f'));
+        $sMensagem  = "Não há saldo suficiente na ficha {$oFichaFinanceira->getDescricao()} para autorizar o empenho.";
+        $sMensagem .= "\\n\\nSaldo Disponível: {$sValor}";
+        throw new BusinessException($sMensagem);
+      }
     }
         ]]>
       </add>
@@ -163,42 +177,50 @@
         return $oStdMovimento->iCodMov;
       }, $oParam->aMovimentos);
 
-      $sCodigosMovimentos = implode(',', $aCodigosMovimentos);
+      /*$sCodigosMovimentos = implode(',', $aCodigosMovimentos);
       $sSqlMovimentos     = "select e60_coddot, e81_codmov, e82_codord from empagemov ";
       $sSqlMovimentos    .= "inner join empempenho on e81_numemp = e60_numemp ";
       $sSqlMovimentos    .= "inner join empord     on e81_codmov = e82_codmov ";
       $sSqlMovimentos    .= "where e81_codmov in({$sCodigosMovimentos}) ";
       $rsDadosMovimentos  = db_query($sSqlMovimentos);
       if (!$rsDadosMovimentos || pg_num_rows($rsDadosMovimentos) === 0) {
-        throw new DBException("Não foi possível consultar o saldo das Fichas Financeiras.");
-      }
+        //throw new DBException("Não foi possível consultar o saldo das Fichas Financeiras.");
+      }*/
 
       $aDadosMovimentos = db_utils::getCollectionByRecord($rsDadosMovimentos);
       $aMovimentosFichaSemSaldo = array();
-      foreach ($aDadosMovimentos as $oDados) {
+      
+      $oPlugin       = new Plugin ( null, 'ProgramacaoFinanceira' );
+      $aConfiguracao = PluginService::getPluginConfig ( $oPlugin );
+      
+      $aInstituicoesNaoValida = explode ( ",", $aConfiguracao["InstituicaoNaoValidaSaldo"] );
+            
+      if (!in_array($db_getsession("DB_instit"), $aInstituicoesNaoValida)) {
+        foreach ($aDadosMovimentos as $oDados) {
 
-        $oDotacao = DotacaoRepository::getDotacaoPorCodigoAno($oDados->e60_coddot, db_getsession('DB_anousu'));
-        $oFicha   = FichaFinanceiraRepository::getInstanciaPorDotacao($oDotacao);
-        $oSaldo   = $oFicha->getSaldoNoMes($oDataSessao->getMes());
+		    $oDotacao = DotacaoRepository::getDotacaoPorCodigoAno($oDados->e60_coddot, db_getsession('DB_anousu'));
+		    $oFicha   = FichaFinanceiraRepository::getInstanciaPorDotacao($oDotacao);
+		    $oSaldo   = $oFicha->getSaldoNoMes($oDataSessao->getMes());
 
-        /**
-         * Não há saldo suficiente na ficha
-         */
-        if (!$oSaldo->possuiSaldoPagar()) {
+		    /**
+		     * Não há saldo suficiente na ficha
+		     */
+		    if (!$oSaldo->possuiSaldoPagar()) {
 
-          /**
-           * Verifica se a Ficha já não está no array
-           */
-          if (!isset($aMovimentosFichaSemSaldo[$oFicha->getCodigo()])) {
-            $aMovimentosFichaSemSaldo[$oFicha->getCodigo()] = array();
-          }
-          /**
-           * Verifica se a OP já não está no array
-           */
-          if (!in_array($oDados->e82_codord, $aMovimentosFichaSemSaldo[$oFicha->getCodigo()])) {
-            $aMovimentosFichaSemSaldo[$oFicha->getCodigo()][] = $oDados->e82_codord;
-          }
-        }
+		      /**
+		       * Verifica se a Ficha já não está no array
+		       */
+		      if (!isset($aMovimentosFichaSemSaldo[$oFicha->getCodigo()])) {
+		        $aMovimentosFichaSemSaldo[$oFicha->getCodigo()] = array();
+		      }
+		      /**
+		       * Verifica se a OP já não está no array
+		       */
+		      if (!in_array($oDados->e82_codord, $aMovimentosFichaSemSaldo[$oFicha->getCodigo()])) {
+		        $aMovimentosFichaSemSaldo[$oFicha->getCodigo()][] = $oDados->e82_codord;
+		      }
+		    }
+		  }
       }
 
       /**
