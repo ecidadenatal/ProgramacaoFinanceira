@@ -48,7 +48,7 @@
     
           $aInstituicoesNaoValida = explode ( ",", $aConfiguracao["InstituicaoNaoValidaSaldo"] );
           
-          if (!in_array($db_getsession("DB_instit"), $aInstituicoesNaoValida) && ! $oSaldoFichaFinanceira->possuiSaldoEmpenhar($oEmpenhoFinanceiro->getValorEmpenho())) {
+          if (!in_array(db_getsession("DB_instit"), $aInstituicoesNaoValida) && ! $oSaldoFichaFinanceira->possuiSaldoEmpenhar($oEmpenhoFinanceiro->getValorEmpenho())) {
 		      //Instancia uma objeto saldofichafinanceira para cada um dos doze meses, e compara com cada uma das cotas
 		      $sMensagem = "";
 		      for ($i=1; $i <= 12; $i++) { 
@@ -140,7 +140,7 @@
     
     $aInstituicoesNaoValida = explode ( ",", $aConfiguracao["InstituicaoNaoValidaSaldo"] );
           
-    if (!in_array($db_getsession("DB_instit"), $aInstituicoesNaoValida)) {
+    if (!in_array(db_getsession("DB_instit"), $aInstituicoesNaoValida)) {
   
       if (!$oSaldoFichaFinanceira->possuiSaldoEmpenhar($e54_valor)) {
   
@@ -195,7 +195,7 @@
       
       $aInstituicoesNaoValida = explode ( ",", $aConfiguracao["InstituicaoNaoValidaSaldo"] );
             
-      if (!in_array($db_getsession("DB_instit"), $aInstituicoesNaoValida)) {
+      if (!in_array(db_getsession("DB_instit"), $aInstituicoesNaoValida)) {
         foreach ($aDadosMovimentos as $oDados) {
 
 		    $oDotacao = DotacaoRepository::getDotacaoPorCodigoAno($oDados->e60_coddot, db_getsession('DB_anousu'));
