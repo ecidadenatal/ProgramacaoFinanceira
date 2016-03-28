@@ -423,25 +423,22 @@ class SaldoFichaFinanceira {
 
     /* Alterado para quando for lançamento de empenho, buscar os valores das cotas */
     if ($iTipoLancamento == 10 && $iTipoLancamentoEstorno == 11) {
-      $sSqlempenhado  = "select coalesce(sum(case when c53_tipo = 10 then e05_valor    else 0 end), 0) as valor, ";
-      $sSqlempenhado .= "       coalesce(sum(case when c53_tipo = 11 then valoranulado else 0 end), 0) as valor_estorno  ";
+      $sSqlempenhado  = "select sum(coalesce(e05_valor   , 0)) as valor,         ";
+      $sSqlempenhado .= "       sum(coalesce(valoranulado, 0)) as valor_estorno  ";
       $sSqlempenhado .= "FROM empempenho                                                                         ";
-      $sSqlempenhado .= "  INNER JOIN conlancamemp ON conlancamemp.c75_numemp = empempenho.e60_numemp            ";
-      $sSqlempenhado .= "  INNER JOIN conlancam    ON conlancam.c70_codlan    = conlancamemp.c75_codlan          ";
-      $sSqlempenhado .= "  INNER JOIN conlancamdoc ON conlancamdoc.c71_codlan = conlancamemp.c75_codlan          ";
-      $sSqlempenhado .= "  INNER JOIN conhistdoc   ON conhistdoc.c53_coddoc   = conlancamdoc.c71_coddoc          ";
-      $sSqlempenhado .= "  INNER JOIN orcdotacao   ON orcdotacao.o58_anousu   = empempenho.e60_anousu            ";
-      $sSqlempenhado .= "    AND orcdotacao.o58_coddot   = empempenho.e60_coddot                                 ";
-      $sSqlempenhado .= "  INNER JOIN db_config    ON db_config.codigo        = empempenho.e60_instit            ";
+      $sSqlempenhado .= "  INNER JOIN orcdotacao        ON orcdotacao.o58_anousu        = empempenho.e60_anousu  ";
+      $sSqlempenhado .= "                              AND orcdotacao.o58_coddot        = empempenho.e60_coddot  ";
+      $sSqlempenhado .= "  INNER JOIN db_config         ON db_config.codigo             = empempenho.e60_instit  ";
       $sSqlempenhado .= "  INNER JOIN empenhocotamensal ON empenhocotamensal.e05_numemp = empempenho.e60_numemp  ";
-      $sSqlempenhado .= "    AND empenhocotamensal.e05_mes = {$iMes}                                             ";
       $sSqlempenhado .= "   LEFT JOIN plugins.empenhocotamensalanulacao ON plugins.empenhocotamensalanulacao.empenhocotamensal = empenhocotamensal.e05_sequencial ";
-      $sSqlempenhado .= "WHERE c53_tipo in ({$iTipoLancamento}, {$iTipoLancamentoEstorno}) and o58_anousu = {$iAno} ";
- 	    $sSqlempenhado .= "		 and o58_orgao = {$iOrgao} and o58_unidade = {$iUnidade}";
- 	    $sSqlempenhado .= "		 and o58_codigo = {$iRecurso} and o58_localizadorgastos = {$iAnexo} and o58_instit = {$iInstuicao} ";
- 	    $sSqlempenhado .= "		 and e60_emiss between '{$sDataInicio}' and '{$sDataFim}'";
+      $sSqlempenhado .= "WHERE o58_anousu = {$iAno} ";
+      $sSqlempenhado .= "    and o58_orgao = {$iOrgao} and o58_unidade = {$iUnidade}";
+      $sSqlempenhado .= "    and o58_codigo = {$iRecurso} and o58_localizadorgastos = {$iAnexo} and o58_instit = {$iInstuicao} ";
+      $sSqlempenhado .= "    and empenhocotamensal.e05_mes = {$iMes} ";
+      $sSqlempenhado .= "GROUP BY empenhocotamensal.e05_mes";
       $rsLancamentos  = $oDaoEmpenho->sql_record($sSqlempenhado);
     } else {
+
       $sSqlempenhado = $oDaoEmpenho->sql_query_buscaliquidacoes(null, $sCampos, null, $sWhere);
       $rsLancamentos = $oDaoEmpenho->sql_record($sSqlempenhado);
     }
