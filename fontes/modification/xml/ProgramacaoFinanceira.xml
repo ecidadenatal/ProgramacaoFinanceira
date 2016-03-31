@@ -51,7 +51,8 @@
           if (!in_array(db_getsession("DB_instit"), $aInstituicoesNaoValida) && ! $oSaldoFichaFinanceira->possuiSaldoEmpenhar($oEmpenhoFinanceiro->getValorEmpenho())) {
 		      //Instancia uma objeto saldofichafinanceira para cada um dos doze meses, e compara com cada uma das cotas
 		      $sMensagem = "";
-		      for ($i=1; $i <= 12; $i++) { 
+          $mesAtual  = date('m',db_getsession('DB_datausu'));
+          for ($i=$mesAtual; $i <= 12; $i++) { 
 		        $oSaldoFichaFinanceiraMes = new SaldoFichaFinanceira($oFichaFinanceira, $i);
 		        if(!$oSaldoFichaFinanceiraMes->possuiSaldoEmpenhar(${"cota_".$i})) {
 		          $sqlerro    = true;
@@ -111,7 +112,7 @@
       <search><![CDATA[/* [Extensão] Programação Financeira */]]></search>
       <add position="after">
         <![CDATA[
-  require_once modification('model/orcamento/ProgramacaoFinanceira/ProgramacaoFinanceira.model.php');
+  /*require_once modification('model/orcamento/ProgramacaoFinanceira/ProgramacaoFinanceira.model.php');
     require_once modification('model/orcamento/ProgramacaoFinanceira/FichaFinanceira.model.php');
     require_once modification('model/orcamento/ProgramacaoFinanceira/FichaFinanceiraRepository.model.php');
     require_once modification('model/orcamento/ProgramacaoFinanceira/FichaFinanceiraValor.model.php');
@@ -149,7 +150,7 @@
         $sMensagem .= "\\n\\nSaldo Disponível: {$sValor}";
         throw new BusinessException($sMensagem);
       }
-    }
+    }*/
         ]]>
       </add>
     </operation>
