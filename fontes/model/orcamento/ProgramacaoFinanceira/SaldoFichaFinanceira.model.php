@@ -196,7 +196,6 @@ class SaldoFichaFinanceira {
 
       return $this->oSaldoMesAnterior->getSaldoEmpenharAnterior()
              + $this->oSaldoMesAnterior->getPrevisao()
-             + $this->oFichaFinanceira->getValorProgramar()
              + $this->oSaldoMesAnterior->getCredito()
              - $this->oSaldoMesAnterior->getReducao()
              - $this->oSaldoMesAnterior->getValorEmpenhado();
@@ -312,12 +311,14 @@ class SaldoFichaFinanceira {
 
     if ($this->iMes != DBDate::JANEIRO) {
 
-      return $this->oSaldoMesAnterior->getSaldoRepassarAnterior()
+      $saldoRepassarAnterior = $this->oSaldoMesAnterior->getSaldoRepassarAnterior()
              + $this->oSaldoMesAnterior->getPrevisao()
-             + $this->oFichaFinanceira->getValorProgramar()
              + $this->oSaldoMesAnterior->getCredito()
              - $this->oSaldoMesAnterior->getReducao()
              - $this->oSaldoMesAnterior->getValorRepassado();
+
+      return $saldoRepassarAnterior;
+
     }
 
     return 0;
@@ -423,6 +424,7 @@ class SaldoFichaFinanceira {
 
     /* Alterado para quando for lançamento de empenho, buscar os valores das cotas */
     if ($iTipoLancamento == 10 && $iTipoLancamentoEstorno == 11) {
+
       $sSqlempenhado  = "select sum(coalesce(e05_valor   , 0)) as valor,         ";
       $sSqlempenhado .= "       sum(coalesce(valoranulado, 0)) as valor_estorno  ";
       $sSqlempenhado .= "FROM empempenho                                                                         ";
@@ -444,7 +446,8 @@ class SaldoFichaFinanceira {
     }
 
     if ($rsLancamentos === false || $oDaoEmpenho->numrows != 1) {
-      throw new DBException("Houve um erro ao buscar o valor para os lançamentos: " . $oDaoEmpenho->erro_msg);
+      return 0;
+      //throw new DBException("Houve um erro ao buscar o valor para os lançamentos: " . $oDaoEmpenho->erro_msg);
     }
 
     $oTotalLancamentos = db_utils::fieldsMemory($rsLancamentos, 0);

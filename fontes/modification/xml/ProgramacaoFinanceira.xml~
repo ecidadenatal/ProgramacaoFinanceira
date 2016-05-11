@@ -256,12 +256,7 @@
       $oProgramacaoFinanceira = ProgramacaoFinanceira::getInstanciaPorInstituicaoAno($oInstituicao, $iAnoSessao);
       $oFechamento = new FechamentoMensal($oProgramacaoFinanceira);
 
-      $oPlugin       = new Plugin ( null, 'ProgramacaoFinanceira' );
-      $aConfiguracao = PluginService::getPluginConfig ( $oPlugin );
-    
-      $aInstituicoesNaoValida = explode ( ",", $aConfiguracao["InstituicaoNaoValidaSaldo"] );
-
-      if (!in_array(db_getsession("DB_instit"), $aInstituicoesNaoValida) && $oFechamento->mesFechado($oDataSessao->getMes())) {
+      if ($oFechamento->mesFechado($oDataSessao->getMes())) {
 
         $sMes = DBDate::getMesExtenso($oDataSessao->getMes());
         throw new BusinessException("Não é possível efetuar Pagamentos, pois a Programação Financeira já está fechada para o mês de {$sMes}.");
