@@ -440,7 +440,6 @@ class SaldoFichaFinanceira {
       $sSqlempenhado .= "where c53_tipo in ({$iTipoLancamento}, {$iTipoLancamentoEstorno}) and o58_anousu = {$iAno} ";
       $sSqlempenhado .= "      and o58_orgao = {$iOrgao} and o58_unidade = {$iUnidade} and o58_codigo = {$iRecurso} ";
       $sSqlempenhado .= "      and o58_localizadorgastos = {$iAnexo} and o58_instit = {$iInstuicao} ";
-      $sSqlempenhado .= "      and c70_data between '{$sDataInicio}' and '{$sDataFim}' ";
       $sSqlempenhado .= "group by c53_tipo, e05_valor, valoranulado) T ";
 
       $rsLancamentos  = $oDaoEmpenho->sql_record($sSqlempenhado);
