@@ -196,6 +196,7 @@ class SaldoFichaFinanceira {
 
       return $this->oSaldoMesAnterior->getSaldoEmpenharAnterior()
              + $this->oSaldoMesAnterior->getPrevisao()
+             + $this->oFichaFinanceira->getValorProgramar($this->iMes-1)
              + $this->oSaldoMesAnterior->getCredito()
              - $this->oSaldoMesAnterior->getReducao()
              - $this->oSaldoMesAnterior->getValorEmpenhado();
@@ -311,14 +312,12 @@ class SaldoFichaFinanceira {
 
     if ($this->iMes != DBDate::JANEIRO) {
 
-      $saldoRepassarAnterior = $this->oSaldoMesAnterior->getSaldoRepassarAnterior()
+      return $this->oSaldoMesAnterior->getSaldoRepassarAnterior()
              + $this->oSaldoMesAnterior->getPrevisao()
+             + $this->oFichaFinanceira->getValorProgramar()
              + $this->oSaldoMesAnterior->getCredito()
              - $this->oSaldoMesAnterior->getReducao()
              - $this->oSaldoMesAnterior->getValorRepassado();
-
-      return $saldoRepassarAnterior;
-
     }
 
     return 0;
@@ -344,7 +343,7 @@ class SaldoFichaFinanceira {
    */
   public function getValorDisponivelParaEmpenho() {
 
-    return $this->getPrevisao() + $this->getCredito() + $this->oFichaFinanceira->getValorProgramar()
+    return $this->getPrevisao() + $this->getCredito() + $this->oFichaFinanceira->getValorProgramar($this->iMes)
            - $this->getReducao() + $this->getSaldoEmpenharAnterior()
            - $this->getValorEmpenhado();
   }
@@ -354,7 +353,7 @@ class SaldoFichaFinanceira {
    */
   public function getValorDisponivelParaRepasse() {
 
-    return $this->getPrevisao() + $this->getCredito() + $this->oFichaFinanceira->getValorProgramar()
+    return $this->getPrevisao() + $this->getCredito() + $this->oFichaFinanceira->getValorProgramar($this->iMes)
            - $this->getReducao() + $this->getSaldoRepassarAnterior()
            - $this->getValorRepassado();
   }
@@ -425,29 +424,33 @@ class SaldoFichaFinanceira {
     /* Alterado para quando for lançamento de empenho, buscar os valores das cotas */
     if ($iTipoLancamento == 10 && $iTipoLancamentoEstorno == 11) {
 
-      $sSqlempenhado  = "select sum(coalesce(e05_valor   , 0)) as valor,         ";
-      $sSqlempenhado .= "       sum(coalesce(valoranulado, 0)) as valor_estorno  ";
-      $sSqlempenhado .= "FROM empempenho                                                                         ";
-      $sSqlempenhado .= "  INNER JOIN orcdotacao        ON orcdotacao.o58_anousu        = empempenho.e60_anousu  ";
-      $sSqlempenhado .= "                              AND orcdotacao.o58_coddot        = empempenho.e60_coddot  ";
-      $sSqlempenhado .= "  INNER JOIN db_config         ON db_config.codigo             = empempenho.e60_instit  ";
-      $sSqlempenhado .= "  INNER JOIN empenhocotamensal ON empenhocotamensal.e05_numemp = empempenho.e60_numemp  ";
-      $sSqlempenhado .= "   LEFT JOIN plugins.empenhocotamensalanulacao ON plugins.empenhocotamensalanulacao.empenhocotamensal = empenhocotamensal.e05_sequencial ";
-      $sSqlempenhado .= "WHERE o58_anousu = {$iAno} ";
-      $sSqlempenhado .= "    and o58_orgao = {$iOrgao} and o58_unidade = {$iUnidade}";
-      $sSqlempenhado .= "    and o58_codigo = {$iRecurso} and o58_localizadorgastos = {$iAnexo} and o58_instit = {$iInstuicao} ";
-      $sSqlempenhado .= "    and empenhocotamensal.e05_mes = {$iMes} ";
-      $sSqlempenhado .= "GROUP BY empenhocotamensal.e05_mes";
+      $sSqlempenhado  = "select coalesce(sum(case when c53_tipo = 10 then e05_valor    else 0 end), 0) as valor, ";
+      $sSqlempenhado .= "       coalesce(sum(case when c53_tipo = 11 then valoranulado else 0 end), 0) as valor_estorno  ";
+      $sSqlempenhado .= "from (select ";
+      $sSqlempenhado .= "       c53_tipo, e05_valor, valoranulado ";
+      $sSqlempenhado .= "from empempenho ";
+      $sSqlempenhado .= "     inner join conlancamemp      on conlancamemp.c75_numemp = empempenho.e60_numemp ";
+      $sSqlempenhado .= "     inner join conlancam         on conlancam.c70_codlan    = conlancamemp.c75_codlan ";
+      $sSqlempenhado .= "     inner join conlancamdoc      on conlancamdoc.c71_codlan = conlancamemp.c75_codlan ";
+      $sSqlempenhado .= "     inner join orcdotacao        on orcdotacao.o58_anousu   = empempenho.e60_anousu and orcdotacao.o58_coddot = empempenho.e60_coddot ";
+      $sSqlempenhado .= "     inner join conhistdoc        on conhistdoc.c53_coddoc   = conlancamdoc.c71_coddoc ";
+      $sSqlempenhado .= "     inner join db_config         on db_config.codigo        = empempenho.e60_instit ";
+      $sSqlempenhado .= "     inner join empenhocotamensal on empenhocotamensal.e05_numemp = empempenho.e60_numemp and empenhocotamensal.e05_mes = {$iMes} ";
+      $sSqlempenhado .= "      left join plugins.empenhocotamensalanulacao ON plugins.empenhocotamensalanulacao.empenhocotamensal = empenhocotamensal.e05_sequencial ";
+      $sSqlempenhado .= "where c53_tipo in ({$iTipoLancamento}, {$iTipoLancamentoEstorno}) and o58_anousu = {$iAno} ";
+      $sSqlempenhado .= "      and o58_orgao = {$iOrgao} and o58_unidade = {$iUnidade} and o58_codigo = {$iRecurso} ";
+      $sSqlempenhado .= "      and o58_localizadorgastos = {$iAnexo} and o58_instit = {$iInstuicao} ";
+      $sSqlempenhado .= "      and c70_data between '{$sDataInicio}' and '{$sDataFim}' ";
+      $sSqlempenhado .= "group by c53_tipo, e05_valor, valoranulado) T ";
+
       $rsLancamentos  = $oDaoEmpenho->sql_record($sSqlempenhado);
     } else {
-
       $sSqlempenhado = $oDaoEmpenho->sql_query_buscaliquidacoes(null, $sCampos, null, $sWhere);
       $rsLancamentos = $oDaoEmpenho->sql_record($sSqlempenhado);
     }
 
     if ($rsLancamentos === false || $oDaoEmpenho->numrows != 1) {
-      return 0;
-      //throw new DBException("Houve um erro ao buscar o valor para os lançamentos: " . $oDaoEmpenho->erro_msg);
+      throw new DBException("Houve um erro ao buscar o valor para os lançamentos: " . $oDaoEmpenho->erro_msg);
     }
 
     $oTotalLancamentos = db_utils::fieldsMemory($rsLancamentos, 0);

@@ -194,7 +194,10 @@ class FichaFinanceira {
   /**
    * @return float
    */
-  public function getValorProgramar() {
+  public function getValorProgramar($iMes = null) {
+    if ($iMes != null && $iMes != 1) {
+      return 0;
+    }
     return (float) $this->nValorProgramar;
   }
 
