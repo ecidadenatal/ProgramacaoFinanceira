@@ -115,10 +115,7 @@ parse_str($_SERVER["QUERY_STRING"]);
   $sDescricaoFicha .= " || o11_descricao)::varchar ";
 
   $sCampos = " fichaorcamentoprogramacaofinanceira.sequencial as codigo, {$sDescricaoFicha} as descricao";
-  $sOrder = "fichaorcamentoprogramacaofinanceira.sequencial";
-  $aWhere = array(
-    " instituicao = {$iInstituicaoSessao} "
-  );
+  $sOrder = "fichaorcamentoprogramacaofinanceira.orgao, fichaorcamentoprogramacaofinanceira.unidade, fichaorcamentoprogramacaofinanceira.recurso, fichaorcamentoprogramacaofinanceira.anexo";
 
   if (!isset($pesquisa_chave)) {
 
