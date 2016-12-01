@@ -124,7 +124,8 @@
       <search><![CDATA[/* [Extensão] Programação Financeira */]]></search>
       <add position="after">
         <![CDATA[
-  /*require_once modification('model/orcamento/ProgramacaoFinanceira/ProgramacaoFinanceira.model.php');
+	/*
+  require_once modification('model/orcamento/ProgramacaoFinanceira/ProgramacaoFinanceira.model.php');
     require_once modification('model/orcamento/ProgramacaoFinanceira/FichaFinanceira.model.php');
     require_once modification('model/orcamento/ProgramacaoFinanceira/FichaFinanceiraRepository.model.php');
     require_once modification('model/orcamento/ProgramacaoFinanceira/FichaFinanceiraValor.model.php');
@@ -162,7 +163,8 @@
         $sMensagem .= "\\n\\nSaldo Disponível: {$sValor}";
         throw new BusinessException($sMensagem);
       }
-    }*/
+    }
+	*/
         ]]>
       </add>
     </operation>
