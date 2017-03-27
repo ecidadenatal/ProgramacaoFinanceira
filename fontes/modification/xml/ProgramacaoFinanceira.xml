@@ -55,30 +55,26 @@
           $aInstituicoesNaoValida = explode ( ",", $aConfiguracao["InstituicaoNaoValidaSaldo"] );
           
           if (!in_array(db_getsession("DB_instit"), $aInstituicoesNaoValida) && ! $oSaldoFichaFinanceira->possuiSaldoEmpenhar($oEmpenhoFinanceiro->getValorEmpenho())) {
-		      //Instancia uma objeto saldofichafinanceira para cada um dos doze meses, e compara com cada uma das cotas
-		      $sMensagem = "";
-          $mesAtual  = date('m',db_getsession('DB_datausu'));
-          for ($i=$mesAtual; $i <= 12; $i++) { 
-		        $oSaldoFichaFinanceiraMes = new SaldoFichaFinanceira($oFichaFinanceira, $i);
-		        if(!$oSaldoFichaFinanceiraMes->possuiSaldoEmpenhar(${"cota_".$i})) {
-		          $sqlerro    = true;
-		          $sValor     = trim(db_formatar($oSaldoFichaFinanceiraMes->getValorDisponivelParaEmpenho(), 'f'));
-		          $sMensagem .= "Não há saldo suficiente na ficha {$oFichaFinanceira->getDescricao()} do mês {$i} para empenhar.";
-		          $sMensagem .= "\\n\\nSaldo Disponível no mês {$i}: {$sValor} \\n\\n";
-		        }
-		      }
-		      if ($sqlerro) {
-		        throw new Exception($sMensagem);
-		      }
+		     
+		     //Instancia uma objeto saldofichafinanceira para cada um dos doze meses, e compara com cada uma das cotas
+		     $sMensagem = "";
+             $mesAtual  = date('m',db_getsession('DB_datausu'));
+             for ($i=$mesAtual; $i <= 12; $i++) { 
+             
+               $oSaldoFichaFinanceiraMes = new SaldoFichaFinanceira($oFichaFinanceira, $i);
+               $nValorCota = ${"cota_".abs($i)};
+               $nValorCota = str_replace(",",".", str_replace(".", "", $nValorCota));
+               if (!$oSaldoFichaFinanceiraMes->possuiSaldoEmpenhar($nValorCota)) {
+    
+                 $nValorDisponivel = trim(db_formatar($oSaldoFichaFinanceiraMes->getValorDisponivelParaEmpenho(), 'f'));
+                 $sMensagem .= "Não há saldo suficiente na ficha {$oFichaFinanceira->getDescricao()} do mês {$i} para empenhar.";
+                 $sMensagem .= "\\n\\nSaldo Disponível no mês {$i}: {$nValorDisponivel} \\n\\n";
+              
+                 throw new Exception($sMensagem);
+               }
+             }
+             
           }
-          /*if ( ! $oSaldoFichaFinanceira->possuiSaldoEmpenhar($oEmpenhoFinanceiro->getValorEmpenho())) {
-
-            $sqlerro  = true;
-            $sValor = trim(db_formatar($oSaldoFichaFinanceira->getValorDisponivelParaEmpenho(), 'f'));
-            $sMensagem  = "Não há saldo suficiente na ficha {$oFichaFinanceira->getDescricao()} para empenhar.";
-            $sMensagem .= "\\n\\nSaldo Disponível: {$sValor}";
-            throw new Exception($sMensagem);
-          }*/
         }
         ]]>
       </add>
@@ -124,8 +120,7 @@
       <search><![CDATA[/* [Extensão] Programação Financeira */]]></search>
       <add position="after">
         <![CDATA[
-	/*
-  require_once modification('model/orcamento/ProgramacaoFinanceira/ProgramacaoFinanceira.model.php');
+  /*require_once modification('model/orcamento/ProgramacaoFinanceira/ProgramacaoFinanceira.model.php');
     require_once modification('model/orcamento/ProgramacaoFinanceira/FichaFinanceira.model.php');
     require_once modification('model/orcamento/ProgramacaoFinanceira/FichaFinanceiraRepository.model.php');
     require_once modification('model/orcamento/ProgramacaoFinanceira/FichaFinanceiraValor.model.php');
@@ -163,8 +158,7 @@
         $sMensagem .= "\\n\\nSaldo Disponível: {$sValor}";
         throw new BusinessException($sMensagem);
       }
-    }
-	*/
+    }*/
         ]]>
       </add>
     </operation>

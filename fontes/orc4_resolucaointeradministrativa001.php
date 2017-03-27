@@ -356,7 +356,7 @@ $oGet = db_utils::postMemory($_GET);
       codigo   : oCodigo.value == "" ? null : oCodigo.value,
       processo : encodeURIComponent(tagString(oProcesso.value)),
       data     : oData.value.urlDecode(),
-      objetivo : encodeURIComponent(tagString(oObjetivo.value))
+      objetivo : oObjetivo.value
     };
 
     oBtnRISalvar.disabled = true;
