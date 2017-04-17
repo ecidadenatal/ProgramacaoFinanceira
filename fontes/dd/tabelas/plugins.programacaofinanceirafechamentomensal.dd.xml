@@ -52,6 +52,40 @@
            hassequence="f">
 
     </field>
+    <field name="data"
+           label="Data"
+           labelrel="Data"
+           description="Data"
+           conteudo="date"
+           inivalue=""
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>
+    <field name="usuario"
+           label="Usuário"
+           labelrel="Usuário"
+           description="Usuário"
+           conteudo="int4"
+           inivalue=""
+           size="5"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           reference=""
+           ispk="f"
+           hassequence="f">
+
+    </field>      
   </fields>
 
   <foreignkeys>
