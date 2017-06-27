@@ -91,6 +91,8 @@ class FechamentoMensal {
     $oDaoFechamentoMensal = new cl_programacaofinanceirafechamentomensal();
     $oDaoFechamentoMensal->orcamentoprogramacaofinanceira = $this->oProgramacaoFinanceira->getCodigo();
     $oDaoFechamentoMensal->mes                            = $iMes;
+    $oDaoFechamentoMensal->data                           = date("Y-m-d");
+    $oDaoFechamentoMensal->usuario                        = db_getsession("DB_id_usuario");
     $oDaoFechamentoMensal->incluir(null);
     $this->iCodigo = $oDaoFechamentoMensal->sequencial;
 

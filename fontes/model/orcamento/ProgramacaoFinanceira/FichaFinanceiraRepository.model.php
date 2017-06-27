@@ -99,7 +99,7 @@ class FichaFinanceiraRepository {
       "fichaorcamentoprogramacaofinanceira.unidade = {$oUnidade->getCodigoUnidade()}",
       "fichaorcamentoprogramacaofinanceira.recurso = {$oRecurso->getCodigo()}",
       "fichaorcamentoprogramacaofinanceira.anexo   = {$oAnexo->getCodigo()}",
-      "orcamentoprogramacaofinanceira.instituicao  = {$oInstituicao->getCodigo()}",
+      //"orcamentoprogramacaofinanceira.instituicao  = {$oInstituicao->getCodigo()}",
       "orcamentoprogramacaofinanceira.ano          = {$iAno}"
     );
 
