@@ -95,12 +95,12 @@ try {
     case 'salvar' :
 
       $iCodigo = !empty($oParam->codigo) ? $oParam->codigo : null;
-      $oData   = new DBDate($oParam->data);
+      $oData   = new DBDate(urlDecode($oParam->data));
       $iAno    = db_getsession('DB_anousu');
 
       $oResolucaoInteradministrativa = new ResolucaoInterAdministrativa($iCodigo);
       $oResolucaoInteradministrativa->setProcesso(urlDecode(utf8_decode(db_stdClass::db_stripTagsJsonSemEscape($oParam->processo))));
-      $oResolucaoInteradministrativa->setObjetivo(urlDecode(utf8_decode(db_stdClass::db_stripTagsJsonSemEscape($oParam->objetivo))));
+      $oResolucaoInteradministrativa->setObjetivo(utf8_decode(db_stdClass::normalizeStringJsonEscapeString($oParam->objetivo)));
       $oResolucaoInteradministrativa->setAno($iAno);
       $oResolucaoInteradministrativa->setData($oData);
       $oResolucaoInteradministrativa->salvar();
@@ -148,7 +148,7 @@ try {
 
       $iSituacao      = (int) $oParam->situacao;
       $oDataAprovacao = null;
-      $oDataAtual     = new DBDate(date('Y-m-d', db_getsession("DB_datausu")));
+      $oDataAtual     = new DBDate(date("d/m/Y", db_getsession("DB_datausu")));
 
       $oResolucaoInteradministrativa = new ResolucaoInteradministrativa((int) $oParam->codigo);
 
@@ -178,7 +178,7 @@ try {
 
       if ($iSituacao === ResolucaoInteradministrativa::SITUACAO_APROVADA) {
 
-        $oDataAprovacao = new DBDate($oParam->data_aprovacao);
+        $oDataAprovacao = new DBDate(urldecode($oParam->data_aprovacao));
 
         if ($oDataAprovacao->getTimeStamp() > $oDataAtual->getTimestamp()) {
           throw new BusinessException("Data de aprovação não pode maior que a data atual.");
@@ -186,7 +186,6 @@ try {
 
         $oResolucaoInteradministrativa->setTipoAprovacao((int) $oParam->tipo_aprovacao);
       }
-
       $oResolucaoInteradministrativa->alterarSituacao($iSituacao, $oDataAprovacao);
       $oRetorno->mensagem = "Situação da Resolução Inter-Administrativa alterada com sucesso.";
 
