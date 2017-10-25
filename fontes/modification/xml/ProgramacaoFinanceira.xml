@@ -54,7 +54,7 @@
     
           $aInstituicoesNaoValida = explode ( ",", $aConfiguracao["InstituicaoNaoValidaSaldo"] );
           
-          if (!in_array(db_getsession("DB_instit"), $aInstituicoesNaoValida)) {
+          if (!in_array(db_getsession("DB_instit"), $aInstituicoesNaoValida) && ! $oSaldoFichaFinanceira->possuiSaldoEmpenhar($oEmpenhoFinanceiro->getValorEmpenho())) {
 		     
 		     //Instancia uma objeto saldofichafinanceira para cada um dos doze meses, e compara com cada uma das cotas
 		     $sMensagem = "";
